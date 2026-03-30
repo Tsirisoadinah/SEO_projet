@@ -11,7 +11,7 @@ function formaterDate($datetime) {
     $mois = ['','janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
     return (int)date('j', $timestamp) . ' ' . $mois[(int)date('n', $timestamp)] . ' ' . date('Y', $timestamp) . ' · ' . date('H\hi', $timestamp);
 }
-
+$site_nom = "IRAN CRISIS";
 $articleModel = new Article();
 $categorieModel = new Categorie();
 $journalisteModel = new Journaliste();
