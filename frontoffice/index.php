@@ -2,11 +2,20 @@
 require('backend/Article.php');
 require('backend/Categorie.php');
 require('backend/Journaliste.php');
+require('backend/JournalisteArticle.php');
+
+function formaterDate($datetime) {
+    setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR', 'French');
+    $timestamp = strtotime($datetime);
+    $jours = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+    $mois = ['','janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+    return (int)date('j', $timestamp) . ' ' . $mois[(int)date('n', $timestamp)] . ' ' . date('Y', $timestamp) . ' · ' . date('H\hi', $timestamp);
+}
 
 $articleModel = new Article();
 $categorieModel = new Categorie();
 $journalisteModel = new Journaliste();
-
+$journaliste_article = new JournalisteArticle();
 // 🔥 DATA
 $article_principal = $articleModel->getLatestArticle();
 $articles_secondaires = $articleModel->getSecondaryArticles();
@@ -15,6 +24,8 @@ $journalistes = $journalisteModel->getActifs();
 $categories = $categorieModel->getNavCategories();
 $site_slogan = "Actualités · Analyses · Terrain";
 $date_mise_a_jour = date('d/m/Y à H:i');
+$article_principal_categorie = $categorieModel->getCategorieLibelle($article_principal['id_categorie']);
+$article_principal_journaliste = $journalisteModel->getJournalisteNom($article_principal['id_articles'], $journaliste_article->getRelations(), $journalistes);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -123,8 +134,8 @@ $date_mise_a_jour = date('d/m/Y à H:i');
                  JOIN Journaliste j ON ... ORDER BY a.creation DESC LIMIT 2 OFFSET 1 -->
             <div class="articles-grille">
                 <?php foreach ($articles_secondaires as $article):
-                    $cat_label = getCategorieLibelle($article['id_Categorie'], $categories);
-                    $journaliste_nom = getJournalisteNom($article['id_articles'], $journaliste_article, $journalistes);
+                    $cat_label = $categorieModel->getCategorieLibelle($article['id_categorie'], $categories);
+                    $journaliste_nom = $journalisteModel->getJournalisteNom($article['id_articles'], $journaliste_article->getRelations(), $journalistes);
                 ?>
                 <article class="article-card">
                     <img src="<?= htmlspecialchars($article['image']) ?>" alt="<?= htmlspecialchars($article['alt']) ?>" class="article-card-image">
@@ -163,7 +174,7 @@ $date_mise_a_jour = date('d/m/Y à H:i');
                  ORDER BY a.creation DESC LIMIT 5 OFFSET 3 -->
             <div class="liste-articles">
                 <?php foreach ($articles_liste as $i => $item):
-                    $cat_label = getCategorieLibelle($item['Id_Categorie'], $categories);
+                    $cat_label = $categorieModel->getCategorieLibelle($item['id_categorie'], $categories);
                 ?>
                 <div class="liste-item">
                     <div class="liste-num"><?= str_pad($i + 1, 2, '0', STR_PAD_LEFT) ?></div>
@@ -214,11 +225,11 @@ $date_mise_a_jour = date('d/m/Y à H:i');
                 <div class="widget-titre">Notre équipe</div>
                 <div class="journalistes-liste">
                     <?php foreach ($journalistes as $journaliste): ?>
-                    <?php if ($journaliste['Actif']): ?>
+                    <?php if ($journaliste['actif']): ?>
                     <div class="journaliste-item">
                         <img src="<?= htmlspecialchars($journaliste['image']) ?>" alt="<?= htmlspecialchars($journaliste['Nom']) ?>" class="journaliste-avatar">
                         <div class="journaliste-info">
-                            <div class="journaliste-nom"><?= htmlspecialchars($journaliste['Nom']) ?></div>
+                            <div class="journaliste-nom"><?= htmlspecialchars($journaliste['nom']) ?></div>
                             <div class="journaliste-depuis">Depuis <?= date('Y', strtotime($journaliste['date_embauche'])) ?></div>
                         </div>
                     </div>
