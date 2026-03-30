@@ -933,3 +933,14 @@
         .hero-titre { animation: fadeUp 0.6s ease 0.35s both; }
         .hero-resume { animation: fadeUp 0.6s ease 0.5s both; }
         .hero-meta { animation: fadeUp 0.6s ease 0.65s both; }
+
+        /* ===== STYLES POUR LES LIENS D'ARTICLES ===== */
+        .article-card-link, .liste-item-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .article-card-link:hover, .liste-item-link:hover {
+            text-decoration: none;
+        }
