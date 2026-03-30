@@ -1,20 +1,222 @@
 <?php
-require('backend/Article.php');
-require('backend/Categorie.php');
-require('backend/Journaliste.php');
+// ============================================================
+// DONNÉES STATIQUES — Structurées selon le schéma init.sql
+// Remplacer par des requêtes SQL plus tard sera très simple
+// ============================================================
 
-$articleModel = new Article();
-$categorieModel = new Categorie();
-$journalisteModel = new Journaliste();
+// --- Table: Categorie ---
+$categories = [
+    1 => ["Id_Categorie" => 1, "libelle" => "Breaking"],
+    2 => ["Id_Categorie" => 2, "libelle" => "Diplomatie"],
+    3 => ["Id_Categorie" => 3, "libelle" => "Humanitaire"],
+    4 => ["Id_Categorie" => 4, "libelle" => "Économie"],
+    5 => ["Id_Categorie" => 5, "libelle" => "Société"],
+    6 => ["Id_Categorie" => 6, "libelle" => "Analyse"],
+    7 => ["Id_Categorie" => 7, "libelle" => "Chronologie"],
+    8 => ["Id_Categorie" => 8, "libelle" => "Reportage"],
+];
 
-// 🔥 DATA
-$article_principal = $articleModel->getLatestArticle();
-$articles_secondaires = $articleModel->getSecondaryArticles();
-$articles_liste = $articleModel->getListArticles();
-$journalistes = $journalisteModel->getActifs();
-$categories = $categorieModel->getNavCategories();
+// --- Table: Journaliste ---
+$journalistes = [
+    1 => [
+        "Id_Journaliste" => 1,
+        "Nom" => "Rédaction internationale",
+        "date_embauche" => "2022-01-15",
+        "Actif" => true,
+        "image" => "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80"
+    ],
+    2 => [
+        "Id_Journaliste" => 2,
+        "Nom" => "Pierre Dumont",
+        "date_embauche" => "2021-06-01",
+        "Actif" => true,
+        "image" => "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80"
+    ],
+    3 => [
+        "Id_Journaliste" => 3,
+        "Nom" => "Marie Fontaine",
+        "date_embauche" => "2023-03-10",
+        "Actif" => true,
+        "image" => "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80"
+    ],
+    4 => [
+        "Id_Journaliste" => 4,
+        "Nom" => "Ahmed Benali",
+        "date_embauche" => "2020-09-20",
+        "Actif" => true,
+        "image" => "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80"
+    ],
+    5 => [
+        "Id_Journaliste" => 5,
+        "Nom" => "Sophie Laurent",
+        "date_embauche" => "2024-01-05",
+        "Actif" => true,
+        "image" => "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80"
+    ],
+];
+
+// --- Table: articles ---
+$articles = [
+    1 => [
+        "Id_articles" => 1,
+        "Titre" => "Derniers développements sur le front : situation critique dans le nord",
+        "Introduction" => "Les observateurs internationaux font état de mouvements significatifs.",
+        "Contenu" => "Les observateurs internationaux font état de mouvements de troupes significatifs près de la frontière nord. L'ONU appelle à une désescalade immédiate. Les forces en présence se sont repositionnées au cours des dernières 48 heures, suscitant l'inquiétude de la communauté internationale.",
+        "image" => "https://images.unsplash.com/photo-1589998059171-988d887df646?w=800&q=80",
+        "alt" => "Situation sur le front nord du conflit",
+        "creation" => "2026-03-30 09:14:00",
+        "Id_Categorie" => 1,
+    ],
+    2 => [
+        "Id_articles" => 2,
+        "Titre" => "Les négociations à Genève reprennent après une semaine de suspension",
+        "Introduction" => "Les délégations se retrouvent sous médiation des Nations Unies.",
+        "Contenu" => "Les délégations se retrouvent autour de la table sous médiation des Nations Unies. Les positions restent éloignées mais le dialogue est rétabli. Le secrétaire général a salué cette reprise des pourparlers comme un signe encourageant.",
+        "image" => "https://images.unsplash.com/photo-1616469829167-0bd76a80c913?w=800&q=80",
+        "alt" => "Négociations diplomatiques à Genève",
+        "creation" => "2026-03-30 07:50:00",
+        "Id_Categorie" => 2,
+    ],
+    3 => [
+        "Id_articles" => 3,
+        "Titre" => "Crise humanitaire : plus de 2 millions de déplacés internes selon le HCR",
+        "Introduction" => "Les camps de réfugiés débordent de capacité.",
+        "Contenu" => "Les camps de réfugiés débordent de capacité. Les ONG sur le terrain alertent sur le manque de ressources médicales et alimentaires. La situation sanitaire se détériore rapidement dans les zones les plus touchées.",
+        "image" => "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800&q=80",
+        "alt" => "Camp de réfugiés déplacés internes",
+        "creation" => "2026-03-29 18:30:00",
+        "Id_Categorie" => 3,
+    ],
+    4 => [
+        "Id_articles" => 4,
+        "Titre" => "Sanctions économiques : l'impact sur la population civile iranienne",
+        "Introduction" => "L'économie locale subit de plein fouet les restrictions internationales.",
+        "Contenu" => "Les sanctions économiques imposées par les puissances occidentales ont un impact direct sur la vie quotidienne des civils. L'inflation galopante rend les produits de première nécessité inaccessibles pour une grande partie de la population.",
+        "image" => "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80",
+        "alt" => "Impact économique des sanctions sur la population",
+        "creation" => "2026-03-29 14:00:00",
+        "Id_Categorie" => 4,
+    ],
+    5 => [
+        "Id_articles" => 5,
+        "Titre" => "Téhéran : la vie quotidienne sous tension permanente",
+        "Introduction" => "Les habitants de la capitale tentent de maintenir un semblant de normalité.",
+        "Contenu" => "Malgré les alertes et les tensions croissantes, les habitants de Téhéran s'efforcent de poursuivre leur quotidien. Les marchés restent ouverts, mais l'ambiance est pesante et les files d'attente s'allongent.",
+        "image" => "https://images.unsplash.com/photo-1565711561500-49678a10a63f?w=800&q=80",
+        "alt" => "Vie quotidienne à Téhéran",
+        "creation" => "2026-03-29 10:00:00",
+        "Id_Categorie" => 5,
+    ],
+    6 => [
+        "Id_articles" => 6,
+        "Titre" => "Analyse : les enjeux géopolitiques régionaux en jeu",
+        "Introduction" => "Le conflit redessine les alliances au Moyen-Orient.",
+        "Contenu" => "Les experts géopolitiques s'accordent à dire que ce conflit dépasse largement les frontières iraniennes. Les alliances régionales sont en pleine recomposition, avec des implications à long terme pour la stabilité de toute la région.",
+        "image" => "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
+        "alt" => "Carte géopolitique du Moyen-Orient",
+        "creation" => "2026-03-28 16:00:00",
+        "Id_Categorie" => 6,
+    ],
+    7 => [
+        "Id_articles" => 7,
+        "Titre" => "Chronologie complète : comment le conflit a éclaté",
+        "Introduction" => "Retour sur les événements clés depuis septembre 2025.",
+        "Contenu" => "Du premier incident diplomatique aux premières frappes, retour détaillé sur l'enchaînement des événements qui ont mené à la situation actuelle. Une timeline illustrée pour comprendre les origines du conflit.",
+        "image" => "https://images.unsplash.com/photo-1504711434969-e33886168d5c?w=800&q=80",
+        "alt" => "Frise chronologique du conflit",
+        "creation" => "2026-03-28 12:00:00",
+        "Id_Categorie" => 7,
+    ],
+    8 => [
+        "Id_articles" => 8,
+        "Titre" => "Témoignages : des civils racontent leur quotidien",
+        "Introduction" => "Paroles recueillies auprès de familles touchées par le conflit.",
+        "Contenu" => "Nos correspondants ont recueilli les témoignages poignants de familles vivant dans les zones les plus affectées. Entre peur, résilience et espoir, ces voix racontent une réalité que les chiffres seuls ne peuvent exprimer.",
+        "image" => "https://images.unsplash.com/photo-1532375810709-75b1da00537c?w=800&q=80",
+        "alt" => "Témoignage de civils",
+        "creation" => "2026-03-27 09:00:00",
+        "Id_Categorie" => 8,
+    ],
+     9 => [
+        "Id_articles" => 9,
+        "Titre" => "Téhéran : la vie quotidienne sous tension permanente",
+        "Introduction" => "Les habitants de la capitale tentent de maintenir un semblant de normalité.",
+        "Contenu" => "Malgré les alertes et les tensions croissantes, les habitants de Téhéran s'efforcent de poursuivre leur quotidien. Les marchés restent ouverts, mais l'ambiance est pesante et les files d'attente s'allongent.",
+        "image" => "https://images.unsplash.com/photo-1565711561500-49678a10a63f?w=800&q=80",
+        "alt" => "Vie quotidienne à Téhéran",
+        "creation" => "2026-03-29 10:00:00",
+        "Id_Categorie" => 5,
+    ],
+];
+
+// --- Table: journaliste_article (liaison Many-to-Many) ---
+$journaliste_article = [
+    ["Id_articles" => 1, "Id_Journaliste" => 1],
+    ["Id_articles" => 2, "Id_Journaliste" => 2],
+    ["Id_articles" => 3, "Id_Journaliste" => 3],
+    ["Id_articles" => 4, "Id_Journaliste" => 4],
+    ["Id_articles" => 5, "Id_Journaliste" => 2],
+    ["Id_articles" => 6, "Id_Journaliste" => 5],
+    ["Id_articles" => 7, "Id_Journaliste" => 1],
+    ["Id_articles" => 8, "Id_Journaliste" => 3],
+];
+
+// ============================================================
+// FONCTIONS UTILITAIRES — Simulent les jointures SQL
+// Ces fonctions seront remplacées par des requêtes SQL
+// ============================================================
+
+/**
+ * Récupère le nom du journaliste d'un article via la table de liaison
+ * Equivalent SQL: SELECT j.Nom FROM Journaliste j
+ *   JOIN journaliste_article ja ON j.Id_Journaliste = ja.Id_Journaliste
+ *   WHERE ja.Id_articles = ?
+ */
+function getJournalisteNom($id_article, $journaliste_article, $journalistes) {
+    foreach ($journaliste_article as $liaison) {
+        if ($liaison['Id_articles'] == $id_article) {
+            return $journalistes[$liaison['Id_Journaliste']]['Nom'] ?? 'Inconnu';
+        }
+    }
+    return 'Inconnu';
+}
+
+/**
+ * Récupère le libellé de la catégorie d'un article
+ * Equivalent SQL: SELECT c.libelle FROM Categorie c WHERE c.Id_Categorie = ?
+ */
+function getCategorieLibelle($id_categorie, $categories) {
+    return $categories[$id_categorie]['libelle'] ?? 'Non classé';
+}
+
+/**
+ * Formate une date de création pour l'affichage
+ */
+function formaterDate($datetime) {
+    setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR', 'French');
+    $timestamp = strtotime($datetime);
+    $jours = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+    $mois = ['','janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+    return (int)date('j', $timestamp) . ' ' . $mois[(int)date('n', $timestamp)] . ' ' . date('Y', $timestamp) . ' · ' . date('H\hi', $timestamp);
+}
+
+// ============================================================
+// PRÉPARATION DES DONNÉES POUR L'AFFICHAGE
+// ============================================================
+$site_nom = "IRAN CRISIS";
 $site_slogan = "Actualités · Analyses · Terrain";
 $date_mise_a_jour = date('d/m/Y à H:i');
+
+// Article principal (le plus récent) — SQL: ORDER BY creation DESC LIMIT 1
+$article_principal = $articles[1];
+$article_principal_journaliste = getJournalisteNom($article_principal['Id_articles'], $journaliste_article, $journalistes);
+$article_principal_categorie = getCategorieLibelle($article_principal['Id_Categorie'], $categories);
+
+// Articles secondaires (les 2 suivants) — SQL: ORDER BY creation DESC LIMIT 2 OFFSET 1
+$articles_secondaires = [$articles[2], $articles[3]];
+
+// Articles liste "À lire également" — SQL: ORDER BY creation DESC LIMIT 5 OFFSET 3
+$articles_liste = [$articles[4], $articles[5], $articles[6], $articles[7], $articles[8]];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -94,8 +296,8 @@ $date_mise_a_jour = date('d/m/Y à H:i');
     <div class="hero-overlay"></div>
     <div class="hero-contenu">
         <span class="hero-categorie"><?= htmlspecialchars(strtoupper($article_principal_categorie)) ?></span>
-        <h1 class="hero-titre"><?= htmlspecialchars($article_principal['titre']) ?></h1>
-        <p class="hero-resume"><?= htmlspecialchars($article_principal['contenu']) ?></p>
+        <h1 class="hero-titre"><?= htmlspecialchars($article_principal['Titre']) ?></h1>
+        <p class="hero-resume"><?= htmlspecialchars($article_principal['Contenu']) ?></p>
         <div class="hero-meta">
             <span class="hero-auteur"><?= htmlspecialchars($article_principal_journaliste) ?></span>
             <span class="hero-date"><?= formaterDate($article_principal['creation']) ?></span>
@@ -123,14 +325,14 @@ $date_mise_a_jour = date('d/m/Y à H:i');
                  JOIN Journaliste j ON ... ORDER BY a.creation DESC LIMIT 2 OFFSET 1 -->
             <div class="articles-grille">
                 <?php foreach ($articles_secondaires as $article):
-                    $cat_label = getCategorieLibelle($article['id_Categorie'], $categories);
-                    $journaliste_nom = getJournalisteNom($article['id_articles'], $journaliste_article, $journalistes);
+                    $cat_label = getCategorieLibelle($article['Id_Categorie'], $categories);
+                    $journaliste_nom = getJournalisteNom($article['Id_articles'], $journaliste_article, $journalistes);
                 ?>
                 <article class="article-card">
                     <img src="<?= htmlspecialchars($article['image']) ?>" alt="<?= htmlspecialchars($article['alt']) ?>" class="article-card-image">
                     <div class="article-card-cat"><?= htmlspecialchars(strtoupper($cat_label)) ?></div>
-                    <h2 class="article-card-titre"><?= htmlspecialchars($article['titre']) ?></h2>
-                    <p class="article-card-resume"><?= htmlspecialchars($article['contenu']) ?></p>
+                    <h2 class="article-card-titre"><?= htmlspecialchars($article['Titre']) ?></h2>
+                    <p class="article-card-resume"><?= htmlspecialchars($article['Contenu']) ?></p>
                     <div class="article-card-meta">
                         <span><?= htmlspecialchars($journaliste_nom) ?></span>
                         <span>·</span>
@@ -169,7 +371,7 @@ $date_mise_a_jour = date('d/m/Y à H:i');
                     <div class="liste-num"><?= str_pad($i + 1, 2, '0', STR_PAD_LEFT) ?></div>
                     <div>
                         <div class="liste-cat"><?= htmlspecialchars(strtoupper($cat_label)) ?></div>
-                        <div class="liste-titre"><?= htmlspecialchars($item['titre']) ?></div>
+                        <div class="liste-titre"><?= htmlspecialchars($item['Titre']) ?></div>
                         <div class="liste-date"><?= formaterDate($item['creation']) ?></div>
                     </div>
                 </div>
