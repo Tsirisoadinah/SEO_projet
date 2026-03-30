@@ -11,7 +11,7 @@ function formaterDate($datetime) {
     $mois = ['','janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
     return (int)date('j', $timestamp) . ' ' . $mois[(int)date('n', $timestamp)] . ' ' . date('Y', $timestamp) . ' · ' . date('H\hi', $timestamp);
 }
-
+$site_nom = "IRAN CRISIS";
 $articleModel = new Article();
 $categorieModel = new Categorie();
 $journalisteModel = new Journaliste();
@@ -78,7 +78,7 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
         </div>
     </div>
     <nav class="nav">
-        <a href="index.php" class="actif">Accueil</a>
+        <a href="#" class="actif">Accueil</a>
         <?php
         // Navigation dynamique basée sur les catégories
         // SQL: SELECT libelle FROM Categorie ORDER BY Id_Categorie
@@ -112,7 +112,7 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
             <span class="hero-date"><?= formaterDate($article_principal['creation']) ?></span>
             <span class="hero-lecture">Lecture : 4 min</span>
         </div>
-        <a href="#" class="btn-lire">Lire l'article complet →</a>
+        <a href="article.php?id=<?= $article_principal['id_articles'] ?>" class="btn-lire">Lire l'article complet →</a>
     </div>
 </section>
 
@@ -137,19 +137,21 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
                     $cat_label = $categorieModel->getCategorieLibelle($article['id_categorie'], $categories);
                     $journaliste_nom = $journalisteModel->getJournalisteNom($article['id_articles'], $journaliste_article->getRelations(), $journalistes);
                 ?>
-                <article class="article-card">
-                    <img src="<?= htmlspecialchars($article['image']) ?>" alt="<?= htmlspecialchars($article['alt']) ?>" class="article-card-image">
-                    <div class="article-card-cat"><?= htmlspecialchars(strtoupper($cat_label)) ?></div>
-                    <h2 class="article-card-titre"><?= htmlspecialchars($article['titre']) ?></h2>
-                    <p class="article-card-resume"><?= htmlspecialchars($article['contenu']) ?></p>
-                    <div class="article-card-meta">
-                        <span><?= htmlspecialchars($journaliste_nom) ?></span>
-                        <span>·</span>
-                        <span><?= formaterDate($article['creation']) ?></span>
-                        <span>·</span>
-                        <span>5 min de lecture</span>
-                    </div>
-                </article>
+                <a href="article.php?id=<?= $article['id_articles'] ?>" class="article-card-link">
+                    <article class="article-card">
+                        <img src="<?= htmlspecialchars($article['image']) ?>" alt="<?= htmlspecialchars($article['alt']) ?>" class="article-card-image">
+                        <div class="article-card-cat"><?= htmlspecialchars(strtoupper($cat_label)) ?></div>
+                        <h2 class="article-card-titre"><?= htmlspecialchars($article['titre']) ?></h2>
+                        <p class="article-card-resume"><?= htmlspecialchars($article['contenu']) ?></p>
+                        <div class="article-card-meta">
+                            <span><?= htmlspecialchars($journaliste_nom) ?></span>
+                            <span>·</span>
+                            <span><?= formaterDate($article['creation']) ?></span>
+                            <span>·</span>
+                            <span>5 min de lecture</span>
+                        </div>
+                    </article>
+                </a>
                 <?php endforeach; ?>
             </div>
 
@@ -176,14 +178,16 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
                 <?php foreach ($articles_liste as $i => $item):
                     $cat_label = $categorieModel->getCategorieLibelle($item['id_categorie'], $categories);
                 ?>
-                <div class="liste-item">
-                    <div class="liste-num"><?= str_pad($i + 1, 2, '0', STR_PAD_LEFT) ?></div>
-                    <div>
-                        <div class="liste-cat"><?= htmlspecialchars(strtoupper($cat_label)) ?></div>
-                        <div class="liste-titre"><?= htmlspecialchars($item['titre']) ?></div>
-                        <div class="liste-date"><?= formaterDate($item['creation']) ?></div>
+                <a href="article.php?id=<?= $item['id_articles'] ?>" class="liste-item-link">
+                    <div class="liste-item">
+                        <div class="liste-num"><?= str_pad($i + 1, 2, '0', STR_PAD_LEFT) ?></div>
+                        <div>
+                            <div class="liste-cat"><?= htmlspecialchars(strtoupper($cat_label)) ?></div>
+                            <div class="liste-titre"><?= htmlspecialchars($item['titre']) ?></div>
+                            <div class="liste-date"><?= formaterDate($item['creation']) ?></div>
+                        </div>
                     </div>
-                </div>
+                </a>
                 <?php endforeach; ?>
             </div>
 
