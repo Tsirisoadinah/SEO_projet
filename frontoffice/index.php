@@ -78,7 +78,7 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
         </div>
     </div>
     <nav class="nav">
-        <a href="index.php" class="actif">Accueil</a>
+        <a href="#" class="actif">Accueil</a>
         <?php
         // Navigation dynamique basée sur les catégories
         // SQL: SELECT libelle FROM Categorie ORDER BY Id_Categorie
