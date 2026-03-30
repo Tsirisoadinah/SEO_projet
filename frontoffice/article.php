@@ -9,6 +9,7 @@ $article = $stmt->fetch();
 ?>
 
 <h1><?= $article['titre'] ?></h1>
+<h2><?= $article['introduction'] ?></h2>
 <img src="<?= $article['image'] ?>" alt="<?= $article['alt'] ?>" width="300">
 
 <p><?= $article['contenu'] ?></p>
