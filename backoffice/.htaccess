@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# URL d'édition : /backoffice/edit_article-2.html -> /backoffice/edit_article.php?id=2
+RewriteRule ^edit_article-([0-9]+)\.html$ edit_article.php?id=$1 [L,QSA]
+
+# URL d'article : /backoffice/titre-de-l-article.html -> /backoffice/article.php?slug=titre-de-l-article
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9-]+)\.html$ article.php?slug=$1 [L,QSA]
