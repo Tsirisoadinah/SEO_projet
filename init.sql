@@ -37,3 +37,5 @@ CREATE TABLE journaliste_article(
    FOREIGN KEY(Id_articles) REFERENCES articles(Id_articles),
    FOREIGN KEY(Id_Journaliste) REFERENCES Journaliste(Id_Journaliste)
 );
+
+insert into Utilisateur (Nom, email, mdp) values ('Admin', 'admin@gmail.com', 'admin123');
