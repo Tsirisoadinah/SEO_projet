@@ -46,7 +46,7 @@ function slugify($title) {
 <body>
   <div class="page">
     <div class="top-bar">
-      <div class="brand">Le Journal Backoffice</div>
+      <div class="brand">Iran Crisis Backoffice</div>
       <div class="top-actions">
         <a href="ajouter_article.html" class="btn-link">Nouvel article</a>
         <a href="logout.php" class="btn-link">Déconnexion</a>

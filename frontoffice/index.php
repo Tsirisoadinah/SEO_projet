@@ -26,6 +26,26 @@ $site_slogan = "Actualités · Analyses · Terrain";
 $date_mise_a_jour = date('d/m/Y à H:i');
 $article_principal_categorie = $categorieModel->getCategorieLibelle($article_principal['id_categorie']);
 $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_principal['id_articles'], $journaliste_article->getRelations(), $journalistes);
+
+// 🔍 Paramètres de recherche (GET ou URL réécrite)
+$search_query = isset($_GET['q']) ? trim($_GET['q']) : '';
+$search_categorie_raw = isset($_GET['categorie']) ? trim($_GET['categorie']) : '';
+
+// Si la catégorie est passée par nom (URL réécrite), on la convertit en id
+$search_categorie = null;
+if ($search_categorie_raw !== '') {
+    foreach ($categories as $cat) {
+        if (strcasecmp($cat['libelle'], $search_categorie_raw) === 0) {
+            $search_categorie = (int)$cat['id_categorie'];
+            break;
+        }
+    }
+}
+$mode_recherche = ($search_query !== '' || $search_categorie !== null);
+$articles_recherche = [];
+if ($mode_recherche) {
+    $articles_recherche = $articleModel->searchArticles($search_query, $search_categorie);
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -35,16 +55,18 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
     <title><?= $site_nom ?> — <?= $site_slogan ?></title>
     <meta name="description" content="Couverture complète du conflit en Iran : actualités, analyses géopolitiques, situation humanitaire.">
 
+    <base href="/frontoffice/">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-   <link rel="stylesheet" href="assets/css/accueil.css">
+    <link rel="stylesheet" href="assets/css/accueil.css">
 </head>
 <body>
 
-<!-- BARRE D'ALERTE EN TEMPS RÉEL -->
+<!-- BARRE D'ALERTE EN TEMPS RÉEL 
 <div class="barre-alerte">
     <div class="alerte-inner container" style="overflow: hidden;">
         <span class="alerte-label">⚡ EN DIRECT</span>
@@ -63,7 +85,7 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
             </div>
         </div>
     </div>
-</div>
+</div>-->
 
 <!-- EN-TÊTE -->
 <header class="entete">
@@ -78,19 +100,33 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
         </div>
     </div>
     <nav class="nav">
-        <a href="#" class="actif">Accueil</a>
+        <a href="index.php" class="actif">Accueil</a>
         <?php
-        // Navigation dynamique basée sur les catégories
-        // SQL: SELECT libelle FROM Categorie ORDER BY Id_Categorie
-        $nav_categories = [2, 3, 6, 7]; // Diplomatie, Humanitaire, Analyse, Chronologie
-        foreach ($nav_categories as $cat_id): ?>
-            <a href="#"><?= htmlspecialchars($categories[$cat_id]['libelle']) ?></a>
-        <?php endforeach; ?>
+        // Navigation dynamique basée sur une sélection de catégories
+        // Liens SEO-friendly : /frontoffice/index/categorie/NOM
+        $nav_categories = [2, 3, 6, 7]; // Diplomatie, Humanitaire, Analyse, Chronologie (Id_Categorie)
+        foreach ($categories as $cat):
+            if (in_array($cat['id_categorie'], $nav_categories, true)):
+                $catSlug = rawurlencode($cat['libelle']);
+        ?>
+            <a href="index/categorie/<?= $catSlug ?>"><?= htmlspecialchars($cat['libelle']) ?></a>
+        <?php
+            endif;
+        endforeach;
+        ?>
         <a href="#">Carte du conflit</a>
-        <div class="nav-recherche">
-            <input type="text" placeholder="Rechercher...">
+        <form method="get" class="nav-recherche">
+            <input type="text" name="q" placeholder="Rechercher..." value="<?= htmlspecialchars($search_query) ?>">
+            <select name="categorie">
+                <option value="">Toutes les catégories</option>
+                <?php foreach ($categories as $cat): ?>
+                    <option value="<?= htmlspecialchars($cat['libelle']) ?>" <?= ($search_categorie !== null && $search_categorie === (int)$cat['id_categorie']) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($cat['libelle']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
             <button class="btn-recherche">→</button>
-        </div>
+        </form>
     </nav>
 </header>
 
@@ -114,7 +150,7 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
         </div>
         <a href="article.php?id=<?= $article_principal['id_articles'] ?>" class="btn-lire">Lire l'article complet →</a>
     </div>
-</section>
+</section> 
 
 <!-- CONTENU PRINCIPAL -->
 <main class="container">
@@ -123,6 +159,40 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
 
         <!-- COLONNE ARTICLES -->
         <div>
+
+            <?php if ($mode_recherche): ?>
+            <div class="section-titre">
+                <h2>Résultats de recherche</h2>
+            </div>
+
+            <?php if (empty($articles_recherche)): ?>
+                <p>Aucun article ne correspond à votre recherche.</p>
+            <?php else: ?>
+            <div class="articles-grille">
+                <?php foreach ($articles_recherche as $article):
+                    $cat_label = $categorieModel->getCategorieLibelle($article['id_categorie']);
+                    $journaliste_nom = $journalisteModel->getJournalisteNom($article['id_articles'], $journaliste_article->getRelations(), $journalistes);
+                ?>
+                <a href="article.php?id=<?= $article['id_articles'] ?>" class="article-card-link">
+                    <article class="article-card">
+                        <img src="<?= htmlspecialchars($article['image']) ?>" alt="<?= htmlspecialchars($article['alt']) ?>" class="article-card-image">
+                        <div class="article-card-cat"><?= htmlspecialchars(strtoupper($cat_label)) ?></div>
+                        <h2 class="article-card-titre"><?= htmlspecialchars($article['titre']) ?></h2>
+                        <p class="article-card-resume"><?= htmlspecialchars($article['contenu']) ?></p>
+                        <div class="article-card-meta">
+                            <span><?= htmlspecialchars($journaliste_nom) ?></span>
+                            <span>·</span>
+                            <span><?= formaterDate($article['creation']) ?></span>
+                            <span>·</span>
+                            <span>5 min de lecture</span>
+                        </div>
+                    </article>
+                </a>
+                <?php endforeach; ?>
+            </div>
+            <div class="separateur">FIN DES RÉSULTATS</div>
+            <?php endif; ?>
+            <?php endif; ?>
 
             <!-- Articles secondaires en grille -->
             <div class="section-titre">
@@ -134,7 +204,7 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
                  JOIN Journaliste j ON ... ORDER BY a.creation DESC LIMIT 2 OFFSET 1 -->
             <div class="articles-grille">
                 <?php foreach ($articles_secondaires as $article):
-                    $cat_label = $categorieModel->getCategorieLibelle($article['id_categorie'], $categories);
+                    $cat_label = $categorieModel->getCategorieLibelle($article['id_categorie']);
                     $journaliste_nom = $journalisteModel->getJournalisteNom($article['id_articles'], $journaliste_article->getRelations(), $journalistes);
                 ?>
                 <a href="article.php?id=<?= $article['id_articles'] ?>" class="article-card-link">
@@ -176,7 +246,7 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
                  ORDER BY a.creation DESC LIMIT 5 OFFSET 3 -->
             <div class="liste-articles">
                 <?php foreach ($articles_liste as $i => $item):
-                    $cat_label = $categorieModel->getCategorieLibelle($item['id_categorie'], $categories);
+                    $cat_label = $categorieModel->getCategorieLibelle($item['id_categorie']);
                 ?>
                 <a href="article.php?id=<?= $item['id_articles'] ?>" class="liste-item-link">
                     <div class="liste-item">
@@ -231,7 +301,7 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
                     <?php foreach ($journalistes as $journaliste): ?>
                     <?php if ($journaliste['actif']): ?>
                     <div class="journaliste-item">
-                        <img src="<?= htmlspecialchars($journaliste['image']) ?>" alt="<?= htmlspecialchars($journaliste['Nom']) ?>" class="journaliste-avatar">
+                        <img src="<?= htmlspecialchars($journaliste['image']) ?>" alt="<?= htmlspecialchars($journaliste['nom']) ?>" class="journaliste-avatar">
                         <div class="journaliste-info">
                             <div class="journaliste-nom"><?= htmlspecialchars($journaliste['nom']) ?></div>
                             <div class="journaliste-depuis">Depuis <?= date('Y', strtotime($journaliste['date_embauche'])) ?></div>
@@ -314,8 +384,10 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
             <div class="footer-col-titre">Rubriques</div>
             <ul class="footer-liens">
                 <!-- SQL: SELECT libelle FROM Categorie LIMIT 5 -->
-                <?php foreach (array_slice($categories, 0, 5) as $cat): ?>
-                <li><a href="#"><?= htmlspecialchars($cat['libelle']) ?></a></li>
+                <?php foreach (array_slice($categories, 0, 5) as $cat): 
+                    $catSlug = rawurlencode($cat['libelle']);
+                ?>
+                <li><a href="index/categorie/<?= $catSlug ?>"><?= htmlspecialchars($cat['libelle']) ?></a></li>
                 <?php endforeach; ?>
             </ul>
         </div>
@@ -349,4 +421,37 @@ $article_principal_journaliste = $journalisteModel->getJournalisteNom($article_p
 </footer>
 
 </body>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.querySelector('.nav-recherche');
+    if (!form || form.tagName.toLowerCase() !== 'form') {
+        return;
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var qInput = form.querySelector('input[name="q"]');
+        var catSelect = form.querySelector('select[name="categorie"]');
+
+        var q = qInput ? qInput.value.trim() : '';
+        var cat = catSelect ? catSelect.value.trim() : '';
+
+        var parts = [];
+        if (q !== '') {
+            parts.push('q/' + encodeURIComponent(q));
+        }
+        if (cat !== '') {
+            parts.push('categorie/' + encodeURIComponent(cat));
+        }
+
+        var path = parts.join('/');
+        if (!path) {
+            window.location.href = './';
+        } else {
+            window.location.href = './' + path;
+        }
+    });
+});
+</script>
 </html>

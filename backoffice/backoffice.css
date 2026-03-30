@@ -101,13 +101,18 @@ a:hover {
 /* Mise en page du dashboard */
 .layout {
   display: grid;
-  grid-template-columns: 2.2fr 1.2fr;
+  grid-template-columns: minmax(0, 700px) minmax(0, 1fr);
+  justify-content: space-between;
   gap: 24px;
   border-top: 1px solid var(--border-color);
   padding-top: 24px;
 }
 
 .main-column {
+  width: 100%;
+  max-width: 700px;
+  overflow-y: auto;
+  justify-self: start;
   border-right: 1px solid var(--border-color);
   padding-right: 20px;
 }
@@ -392,6 +397,8 @@ button:hover {
   }
 
   .main-column {
+    max-height: none;
+    overflow-y: visible;
     border-right: none;
     padding-right: 0;
     border-bottom: 1px solid var(--border-color);
