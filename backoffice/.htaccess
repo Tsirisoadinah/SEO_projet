@@ -1,5 +1,19 @@
 RewriteEngine On
 
+# Redirection de l'ancienne URL PHP vers l'URL propre du dashboard
+RewriteCond %{THE_REQUEST} \s/+backoffice/dashboard\.php[\s?] [NC]
+RewriteRule ^dashboard\.php$ dashboard.html [R=301,L]
+
+# URL dashboard : /backoffice/dashboard.html -> /backoffice/dashboard.php
+RewriteRule ^dashboard\.html$ dashboard.php [L,QSA]
+
+# Redirection de l'ancienne URL PHP vers l'URL propre
+RewriteCond %{THE_REQUEST} \s/+backoffice/add_article\.php[\s?] [NC]
+RewriteRule ^add_article\.php$ ajouter_article.html [R=301,L]
+
+# URL d'ajout : /backoffice/ajouter_article.html -> /backoffice/add_article.php
+RewriteRule ^ajouter_article\.html$ add_article.php [L,QSA]
+
 # URL d'édition : /backoffice/edit_article-2.html -> /backoffice/edit_article.php?id=2
 RewriteRule ^edit_article-([0-9]+)\.html$ edit_article.php?id=$1 [L,QSA]
 

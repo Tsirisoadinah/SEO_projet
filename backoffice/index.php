@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'email' => $user['email'] ?? null,
         ];
 
-        header("Location: dashboard.php");
+        header("Location: dashboard.html");
         exit;
     } else {
         $error = "Email ou mot de passe incorrect.";
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$canonical = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/backoffice/login.php');
+$canonical = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/backoffice/index.php');
 ?>
 <!DOCTYPE html>
 <html lang="fr">

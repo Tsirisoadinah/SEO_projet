@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['user'])) {
-    header("Location: login.php");
+    header("Location: index.php");
 }
 
 include('../config/db.php');
@@ -38,7 +38,7 @@ function slugify($title) {
   <!-- <meta name="robots" content="noindex, nofollow"> -->
   <?php
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $canonical = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/backoffice/dashboard.php');
+    $canonical = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/backoffice/dashboard.html');
   ?>
   <link rel="canonical" href="<?= htmlspecialchars($canonical, ENT_QUOTES, 'UTF-8') ?>">
   <link rel="stylesheet" href="backoffice.css">
@@ -48,7 +48,7 @@ function slugify($title) {
     <div class="top-bar">
       <div class="brand">Le Journal Backoffice</div>
       <div class="top-actions">
-        <a href="add_article.php" class="btn-link">Nouvel article</a>
+        <a href="ajouter_article.html" class="btn-link">Nouvel article</a>
         <a href="logout.php" class="btn-link">Déconnexion</a>
       </div>
     </div>
@@ -177,7 +177,7 @@ function slugify($title) {
         </aside>
       </div>
     <?php else: ?>
-      <p>Aucun article pour le moment. <a href="add_article.php">Créer le premier article</a>.</p>
+      <p>Aucun article pour le moment. <a href="ajouter_article.html">Créer le premier article</a>.</p>
     <?php endif; ?>
   </div>
 </body>

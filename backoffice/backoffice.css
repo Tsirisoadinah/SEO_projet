@@ -277,6 +277,22 @@ a:hover {
   font-weight: 500;
 }
 
+.article-image {
+  margin: 12px 0 18px;
+  text-align: center;
+}
+
+.article-image__img,
+.article-image img {
+  width: auto;
+  max-width: min(100%, 520px);
+  max-height: 320px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
 .article-content {
   font-size: 15px;
   text-align: justify;

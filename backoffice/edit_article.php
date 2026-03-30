@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$id, $journalisteId]);
         }
 
-        header('Location: dashboard.php');
+        header('Location: dashboard.html');
         exit;
     }
 }
@@ -160,7 +160,7 @@ $canonical = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVE
 <body>
   <div class="page page--narrow">
     <div class="top-bar">
-      <a href="dashboard.php">← Retour au dashboard</a>
+      <a href="dashboard.html">← Retour au dashboard</a>
       <a href="logout.php">Déconnexion</a>
     </div>
 

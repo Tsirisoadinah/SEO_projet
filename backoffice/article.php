@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['user'])) {
-    header("Location: login.php");
+    header("Location: index.php");
 }
 
 include('../config/db.php');
@@ -65,6 +65,8 @@ if (!$article) {
   <?php
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $canonical = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/backoffice/article.php');
+    $cssPath = __DIR__ . '/backoffice.css';
+    $cssVersion = file_exists($cssPath) ? filemtime($cssPath) : time();
     $metaSource = $article['introduction'] ?? strip_tags($article['contenu'] ?? '');
     $metaSource = trim($metaSource);
     if ($metaSource === '') {
@@ -79,12 +81,12 @@ if (!$article) {
   <meta name="description" content="<?= htmlspecialchars($metaDescription, ENT_QUOTES, 'UTF-8') ?>">
   <!-- <meta name="robots" content="noindex, nofollow"> -->
   <link rel="canonical" href="<?= htmlspecialchars($canonical, ENT_QUOTES, 'UTF-8') ?>">
-  <link rel="stylesheet" href="backoffice.css">
+  <link rel="stylesheet" href="backoffice.css?v=<?= (int)$cssVersion ?>">
 </head>
 <body>
   <div class="page page--narrow">
     <div class="top-bar">
-      <a href="dashboard.php">← Retour au dashboard</a>
+      <a href="dashboard.html">← Retour au dashboard</a>
       <a href="logout.php">Déconnexion</a>
     </div>
 
@@ -102,6 +104,12 @@ if (!$article) {
         • <?= date('d/m/Y H:i', strtotime($article['creation'])) ?>
       <?php endif; ?>
     </div>
+
+      <?php if (!empty($article['image'])): ?>
+        <div class="article-image">
+          <img class="article-image__img" src="<?= htmlspecialchars($article['image'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($article['alt'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+        </div>
+      <?php endif; ?>
 
     <?php if (!empty($article['introduction'])): ?>
       <p class="article-intro">

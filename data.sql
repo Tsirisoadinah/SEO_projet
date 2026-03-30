@@ -1,6 +1,5 @@
 INSERT INTO Categorie (libelle) VALUES
 ('Breaking'),
-('Diplomatie'),
 ('Humanitaire'),
 ('Économie'),
 ('Société'),
