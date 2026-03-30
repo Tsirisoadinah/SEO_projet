@@ -55,8 +55,10 @@ FileETag None
   BrowserMatch ^Mozilla/4\.0[678] no-gzip
   BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
 
-  # Ajoute header utile
-  Header append Vary Accept-Encoding
+    # Ajoute header utile si mod_headers est actif
+    <IfModule mod_headers.c>
+        Header append Vary Accept-Encoding
+    </IfModule>
 
 </IfModule>
 
