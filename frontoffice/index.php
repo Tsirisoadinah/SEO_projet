@@ -269,7 +269,7 @@ $articles_liste = [$articles[4], $articles[5], $articles[6], $articles[7], $arti
         </div>
     </div>
     <nav class="nav">
-        <a href="accueil.php" class="actif">Accueil</a>
+        <a href="index.php" class="actif">Accueil</a>
         <?php
         // Navigation dynamique basée sur les catégories
         // SQL: SELECT libelle FROM Categorie ORDER BY Id_Categorie
