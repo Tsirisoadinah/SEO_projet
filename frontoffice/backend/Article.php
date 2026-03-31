@@ -47,4 +47,32 @@ class Article {
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // 🔍 Recherche d'articles par mot-clé et/ou catégorie
+    public function searchArticles(?string $motCle = null, ?int $idCategorie = null): array
+    {
+        $sql = "SELECT a.*, c.libelle AS categorie
+                FROM articles a
+                JOIN Categorie c ON a.Id_Categorie = c.Id_Categorie
+                WHERE 1=1";
+
+        $params = [];
+
+        if ($motCle !== null && trim($motCle) !== '') {
+            $sql .= " AND (a.titre ILIKE :motcle OR a.contenu ILIKE :motcle)";
+            $params['motcle'] = '%' . trim($motCle) . '%';
+        }
+
+        if ($idCategorie !== null) {
+            $sql .= " AND a.Id_Categorie = :idCategorie";
+            $params['idCategorie'] = $idCategorie;
+        }
+
+        $sql .= " ORDER BY a.creation DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

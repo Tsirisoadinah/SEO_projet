@@ -7,6 +7,22 @@ RewriteRule ^dashboard\.php$ dashboard.html [R=301,L]
 # URL dashboard : /backoffice/dashboard.html -> /backoffice/dashboard.php
 RewriteRule ^dashboard\.html$ dashboard.php [L,QSA]
 
+# URL réécrite avec recherche et catégorie :
+# /backoffice/dashboard/q/TERME/categorie/NOM -> dashboard.php?q=TERME&categorie=NOM
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^dashboard/q/([^/]+)/categorie/([^/]+)/?$ dashboard.php?q=$1&categorie=$2 [L,QSA,B]
+
+# Variante uniquement recherche : /backoffice/dashboard/q/TERME -> dashboard.php?q=TERME
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^dashboard/q/([^/]+)/?$ dashboard.php?q=$1 [L,QSA,B]
+
+# Variante uniquement catégorie : /backoffice/dashboard/categorie/NOM -> dashboard.php?categorie=NOM
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^dashboard/categorie/([^/]+)/?$ dashboard.php?categorie=$1 [L,QSA,B]
+
 # Redirection de l'ancienne URL PHP vers l'URL propre
 RewriteCond %{THE_REQUEST} \s/+backoffice/add_article\.php[\s?] [NC]
 RewriteRule ^add_article\.php$ ajouter_article.html [R=301,L]

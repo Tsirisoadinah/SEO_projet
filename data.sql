@@ -81,11 +81,11 @@ INSERT INTO articles (Titre, Introduction, Contenu, image, alt, creation, Id_Cat
 8);
 
 INSERT INTO journaliste_article (Id_articles, Id_Journaliste) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
+(4, 1),
 (5, 2),
-(6, 5),
-(7, 1),
-(8, 3);
+(6, 3),
+(7, 4),
+(8, 2),
+(9, 5),
+(10, 1),
+(11, 3);
