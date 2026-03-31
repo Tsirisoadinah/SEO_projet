@@ -33,7 +33,7 @@ function slugify($title) {
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard backoffice - Gestion des articles</title>
+  <title>IRAN CRISIS - Gestion des articles</title>
   <meta name="description" content="Dashboard du backoffice du journal : vue d'ensemble des articles, accès rapide à l'édition et à la création de contenus.">
   <!-- <meta name="robots" content="noindex, nofollow"> -->
   <?php
